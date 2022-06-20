@@ -10,26 +10,177 @@ models:
       - name: height
         tests:
           - positive_values
-      - name: weight
+      - name: weight_lbs
         tests:
           - positive_values
+
   - name: stg_addresses
     description: Contains every unique address on platform
+    columns:
+      - name: address_id
+        tests:
+          - not_null
+          - unique
 
   - name: stg_users 
     description: Contains every unique user on platform 
+    columns:
+      - name: user_id
+        tests:
+          - not_null
+          - unique
 
   - name: stg_promos 
     description: Contains every unique promo code on platform
+    columns:
+      - name: promo_id
+        tests:
+          - not_null
+          - unique
         
   - name: stg_products 
     description: Contains every unique product on platform
+    columns:
+      - name: product_id
+        tests:
+          - not_null
+          - unique
+      - name: price
+        tests:
+          - not_null
+          - positive_values
 
   - name: stg_orders 
     description: Contains every unique order on platform 
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+          - unique
 
   - name: stg_order_items
     description: Breakdown of order into items 
+    columns:
+      - name: quantity
+        tests:
+          - positive_values
 
   - name: stg_events 
-    description: Contains every unique event on platform      
+    description: Contains every unique event on platform 
+    columns:
+      - name: event_id
+        tests:
+          - not_null
+          - unique 
+
+  - name: int_orders_orders_items 
+    description: Orders table with useful summaries from the Order_items table  
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+          - unique 
+      - name: user_id
+        tests:
+          - not_null
+      - name: num_items
+        tests:
+          - positive_values
+  
+
+  - name: fct_orders 
+    description: Fact table for orders  
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+          - unique 
+      - name: user_id
+        tests:
+          - not_null
+      - name: num_items
+        tests:
+          - positive_values
+      - name: days_since_order
+        tests:
+          - positive_values
+
+  - name: int_users_orders 
+    description: Adds some extra details for user in the orders table so downsteam tables don't need to join  
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+      - name: order_user_id
+        tests:
+          - not_null
+
+  - name: fct_users_orders 
+    description: Fact table for order summaries by user  
+    columns:
+      - name: order_user_id
+        tests:
+          - not_null
+          - unique
+      - name: num_orders
+        tests:
+          - positive_values
+      - name: total_orders_amount
+        tests:
+          - positive_values
+      - name: average_spent
+        tests:
+          - positive_values
+      - name: avg_basket_size
+        tests:
+          - positive_values
+      - name: days_since_last_order
+        tests:
+          - positive_values  
+
+  - name: int_sessions_events_basic_agg 
+    description: Basic aggregation of session events counting the types of events for each session_id
+    columns:
+      - name: session_id
+        tests:
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: package_shipped
+        tests:
+          - positive_values
+      - name: checkout
+        tests:
+          - positive_values
+      - name: page_view
+        tests:
+          - positive_values
+      - name: add_to_cart
+        tests:
+          - positive_values          
+
+  - name: fct_sessions 
+    description: Fact table for sessions
+    columns:
+      - name: session_id
+        tests:
+          - not_null          
+      - name: user_id
+        tests:
+          - not_null
+      - name: package_shipped
+        tests:
+          - positive_values
+      - name: checkout
+        tests:
+          - positive_values
+      - name: page_view
+        tests:
+          - positive_values
+      - name: add_to_cart
+        tests:
+          - positive_values 
+      - name: session_length_minutes
+        tests:
+          - positive_values 
