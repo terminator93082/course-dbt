@@ -64,6 +64,9 @@ models:
       - name: quantity
         tests:
           - positive_values
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 4
 
   - name: stg_events 
     description: Contains every unique event on platform 
@@ -72,6 +75,10 @@ models:
         tests:
           - not_null
           - unique 
+      - name: event_type
+        tests:
+          - accepted_values:
+              values: ['checkout', 'package_shipped', 'page_view', 'add_to_cart']
 
   - name: int_orders_orders_items 
     description: Orders table with useful summaries from the Order_items table  
